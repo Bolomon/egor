@@ -43,11 +43,11 @@ class QuestController extends Controller
         return $quest;
     }
 
-    public function complete(Request $request, $questId)
+    public function complete(Request $request, $name)
     {
         $user = $request->user();
 
-        $quest = Quest::findOrFail($questId);
+        $quest = Quest::where('name', $name)->firstOrFail();
 
         $user->quests()->syncWithoutDetaching([
             $quest->id => ['completed' => true]
@@ -57,6 +57,17 @@ class QuestController extends Controller
             'message' => 'Квест отмечен как выполненный',
             'quest' => $quest,
             'completed' => true
+        ]);
+    }
+
+    public function completedCount(Request $request)
+    {
+        $user = $request->user();
+
+        $count = $user->quests()->where('completed', true)->count();
+
+        return response()->json([
+            'completed_quests_count' => $count
         ]);
     }
 }

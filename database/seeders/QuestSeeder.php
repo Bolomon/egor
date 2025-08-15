@@ -23,7 +23,6 @@ class QuestSeeder extends Seeder
             'achievements',
             'person',
             'secret',
-            'postscript',
         ];
 
         foreach ($names as $name) {

@@ -11,21 +11,32 @@ class RegisterController extends Controller
 {
     public function register(Request $request)
     {
+        $phone = preg_replace('/\D+/', '', $request->input('phone'));
+
+        if (strlen($phone) === 11 && $phone[0] === '8') {
+            $phone = '7' . substr($phone, 1);
+        }
+
+        if (strlen($phone) === 10) {
+            $phone = '7' . $phone;
+        }
+
+        $request->merge(['phone' => $phone]);
+
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:users,phone',
+            'phone' => 'required|string|size:11|unique:users,phone',
         ]);
 
         $token = Str::random(60);
 
-        $user = User::create([
+        User::create([
             'name' => $data['name'],
             'phone' => $data['phone'],
             'api_token' => hash('sha256', $token),
         ]);
 
         return response()->json([
-            'user' => $user,
             'token' => $token
         ]);
     }
