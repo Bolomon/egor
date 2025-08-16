@@ -84,7 +84,6 @@ onBeforeMount(() => {
                         incorrect: error,
                         correct: questCompleted,
                     }"
-                    inputmode="numeric"
                     placeholder="Что за секрет?"
                     v-model="userAnswer"
                     :disabled="questCompleted"
