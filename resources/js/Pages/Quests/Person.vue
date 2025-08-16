@@ -164,6 +164,7 @@ onBeforeMount(() => {
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
+    margin-bottom: 60px;
 
     &__step {
         display: grid;
