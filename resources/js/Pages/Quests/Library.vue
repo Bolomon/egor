@@ -24,20 +24,19 @@ const checkAnswersPerField = (userArr, correctArr) => {
     const u = userArr.map(Number)
     const c = correctArr.map(Number)
 
-    const counts = new Map()
-    for (const v of c) counts.set(v, (counts.get(v) || 0) + 1)
-
-    const perCorrect = u.map((val) => {
-        const left = counts.get(val) || 0
-        if (left > 0) {
-            counts.set(val, left - 1)
-            return true
+    const usedIndices = new Set()
+    const perCorrect = u.map(uVal => {
+        for (let i = 0; i < c.length; i++) {
+            if (c[i] === uVal && !usedIndices.has(i)) {
+                usedIndices.add(i)
+                return true
+            }
         }
         return false
-    });
+    })
 
     const allMatch = arraysEqualIgnoreOrder(u, c)
-    return { perCorrect, allMatch }
+    return {perCorrect, allMatch}
 }
 
 const config = {

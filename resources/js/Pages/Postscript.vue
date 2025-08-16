@@ -2,7 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-import { onBeforeMount, ref } from "vue";
+import {computed, onBeforeMount, ref} from "vue";
 
 const step = ref('intro')
 
@@ -17,13 +17,30 @@ const handleInfoAction = () => {
         return
     }
     if (step.value === 'congrats') {
-        // Здесь можно выполнить действие «Забрать подарок», например открыть модал/редирект.
+        window.open('/img/postscript/postscript.png', '_blank')
     }
 }
 
-// Убираем любые сетевые вызовы — только локальные переключения
+const userToken = localStorage.getItem("auth-token")
+
+const countCompletedSteps = ref(0)
+
+const getCountCompletedUserSteps = () => {
+    const config = {
+        headers: {
+            'Authorization': 'Bearer ' + userToken
+        }
+    }
+
+    axios
+        .get('/api/quests/completed/count', config)
+        .then((data) => {
+            countCompletedSteps.value = data.data.completed_quests_count
+        })
+}
+
 onBeforeMount(() => {
-// ни
+    getCountCompletedUserSteps()
 })
 
 </script>
@@ -33,7 +50,7 @@ onBeforeMount(() => {
     <MainLayout>
         <ProgressBar/>
 
-        <div class="info">
+        <div class="info" v-if="countCompletedSteps >= 12">
             <h1 class="info-title">Постскриптум</h1>
             <div v-if="step === 'intro'" class="info-block">
                 <p>
@@ -65,6 +82,10 @@ onBeforeMount(() => {
             <button class="info-btn" @click="handleInfoAction">
                 {{ step === 'intro' ? 'Смотреть расшифровку' : (step === 'paper' ? 'Завершить' : 'Забрать подарок') }}
             </button>
+        </div>
+
+        <div v-else class="info">
+            <h1 class="info-title">Вы ещё не прошли все задания</h1>
         </div>
     </MainLayout>
 </template>
