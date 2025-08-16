@@ -37,6 +37,47 @@ const sendRegisterForm = function () {
 <template>
     <Head title="Главная" />
     <MainLayout>
+        <div class="main">
+            <span class="main-tag">QR-квест</span>
+            <h1 class="main__title">
+                «О! Табаков»
+            </h1>
+            <div class="main__map">
+                <img class="main__map-img" src="/img/main/map.png">
+            </div>
+            <div class="main__info">
+                <img class="main__info-img" src="/img/convert_closed_yellow.svg">
+                <div class="main__info-text">
+                    Откройте все конверты и узнайте <br>
+                    секрет притягательной силы театра!
+                </div>
+            </div>
+            <div class="main__counter">
+                <div class="main__counter-title">
+                    Сканируйте QR-коды, отвечайте <br>
+                    на вопросы и получайте подарок.
+                </div>
+                <div class="main__counter-info">
+                    <div class="main__counter-info__item">
+                        <p class="main__counter-info__item-number">12</p>
+                        <p class="main__counter-info__item-title">заданий</p>
+                    </div>
+                    <div class="main__counter-info__item">
+                        <p class="main__counter-info__item-number">6</p>
+                        <p class="main__counter-info__item-title">залов</p>
+                    </div>
+                    <div class="main__counter-info__item">
+                        <p class="main__counter-info__item-number">1</p>
+                        <p class="main__counter-info__item-title">письмо</p>
+                    </div>
+                </div>
+                <div class="main__counter-footer">
+                    Соберите все фрагменты письма, <br>
+                    чтобы узнать секрет Табакова.
+                </div>
+
+            </div>
+        </div>
         <div class="auth" v-if="!userToken">
             <h3 class="auth-title">Регистрация</h3>
             <div class="auth__group">
@@ -93,6 +134,131 @@ const sendRegisterForm = function () {
 </template>
 
 <style scoped lang="scss">
+    .main {
+        &-tag {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: fit-content;
+            margin: 24px auto 8px;
+            height: 24px;
+            background-color: #EE88CB;
+            padding: 4px 8px;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 11px;
+            line-height: 15px;
+            text-align: center;
+
+            color: #000000;
+        }
+
+        &__title{
+            height: 62px;
+            left: calc(50% - 335px/2);
+            top: 89px;
+            font-style: normal;
+            font-weight: 700;
+            font-size: 45px;
+            line-height: 61px;
+            text-align: center;
+            color: #FFFFFF;
+        }
+        &__map {
+            &-img{
+
+            }
+        }
+        &__info {
+            background: radial-gradient(83.46% 83.46% at 50% 50%, rgba(24, 23, 33, 0.2) 36.88%, rgba(108, 101, 137, 0.2) 100%), #1C1A26;
+            border-radius: 15px;
+            padding: 33px 24px;
+            width: 100%;
+            margin-top: 26px;
+
+            &-img {
+                margin: 0 auto;
+            }
+            &-text {
+                margin-top: 15px;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 14px;
+                line-height: 130%;
+                text-align: center;
+                color: #FFFFFF;
+            }
+        }
+        &__counter{
+            background: radial-gradient(83.46% 83.46% at 50% 50%, rgba(24, 23, 33, 0.2) 36.88%, rgba(108, 101, 137, 0.2) 100%), #1C1A26;
+            border-radius: 15px;
+            padding: 33px 24px;
+            width: 100%;
+            margin-top: 26px;
+
+            &-title{
+                margin: 0 auto;
+
+                font-style: normal;
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 16px;
+                text-align: center;
+
+                color: #FFFFFF;
+            }
+
+            &-info{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-top: 16px;
+                &__item{
+
+                    background: radial-gradient(137.06% 152.82% at 50% 50%, rgba(24, 23, 33, 0.15) 0%, rgba(108, 101, 137, 0.15) 80%);
+                    border-radius: 15px;
+
+                    width: 85px;
+                    height: 85px;
+
+                    flex-direction: column;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    &-number{
+                        font-style: normal;
+                        font-weight: 700;
+                        font-size: 35px;
+                        line-height: 48px;
+
+                        color: #EFC30A;
+
+
+                    }
+
+                    &-title{
+                        font-style: normal;
+                        font-weight: 600;
+                        font-size: 13px;
+                        line-height: 18px;
+
+                        color: #FFFFFF;
+                    }
+                }
+            }
+
+            &-footer {
+                margin-top: 16px;
+                font-style: normal;
+                font-weight: 400;
+                font-size: 12px;
+                line-height: 16px;
+                text-align: center;
+                color: #FFFFFF;
+            }
+        }
+    }
     .auth {
         position: fixed;
         width: 100%;
@@ -102,7 +268,7 @@ const sendRegisterForm = function () {
         background: radial-gradient(83.46% 83.46% at 50% 50%, rgba(24, 23, 33, 0.2) 36.88%, rgba(108, 101, 137, 0.2) 100%), #1C1A26;
         border-radius: 25px 25px 0 0;
         padding: 19px 20px;
-
+        z-index: 10;
         &-title {
             font-style: normal;
             font-weight: 700;
