@@ -26,6 +26,9 @@ import ProgressBar from "@/Components/ProgressBar.vue";
                     с нами. Пусть вера в то, что солнце обязательно взойдет, никогда не покидает вас. Пока она жива, жив и театр.
                 </p>
             </div>
+            <div class="info-paper">
+                <img src="/img/postscript/postscript.png">
+            </div>
         </div>
     </MainLayout>
 </template>
