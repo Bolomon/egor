@@ -131,11 +131,10 @@ onBeforeMount(() => {
                     :class="getSelectClasses(1)"
                 >
                     <option disabled value="-1">Выберите ответ</option>
-                    <option value="1">Трость</option>
-                    <option value="2">Шляпа</option>
+                    <option value="1">Стул</option>
+                    <option value="2">Часы</option>
                     <option value="3">Зонт</option>
-                    <option value="4">Перчатки</option>
-                    <option value="5">Галстук</option>
+                    <option value="4">Окно</option>
                 </select>
             </div>
             <div class="quest__item">
@@ -153,11 +152,10 @@ onBeforeMount(() => {
                     :class="getSelectClasses(2)"
                 >
                     <option disabled value="-1">Выберите ответ</option>
-                    <option value="1">Верёвка</option>
-                    <option value="2">Стул</option>
+                    <option value="1">Стол</option>
+                    <option value="2">Костюм</option>
                     <option value="3">Шкаф</option>
                     <option value="4">Лестница</option>
-                    <option value="5">Канат</option>
                 </select>
             </div>
             <div class="quest__item">
@@ -175,11 +173,10 @@ onBeforeMount(() => {
                     :class="getSelectClasses(3)"
                 >
                     <option disabled value="-1">Выберите ответ</option>
-                    <option value="1">Туфли</option>
+                    <option value="1">Букет</option>
                     <option value="2">Шляпа</option>
-                    <option value="3">Плащ</option>
-                    <option value="4">Перчатки</option>
-                    <option value="5">Трость</option>
+                    <option value="3">Перчатки</option>
+                    <option value="4">Люстра</option>
                 </select>
             </div>
             <div class="quest__item">
@@ -197,11 +194,10 @@ onBeforeMount(() => {
                     :class="getSelectClasses(4)"
                 >
                     <option disabled value="-1">Выберите ответ</option>
-                    <option value="1">Ремень</option>
-                    <option value="2">Галстук</option>
-                    <option value="3">Шляпа</option>
+                    <option value="1">Рубашка</option>
+                    <option value="2">Шляпа</option>
+                    <option value="3">Галстук</option>
                     <option value="4">Подтяжки</option>
-                    <option value="5">Запонки</option>
                 </select>
             </div>
             <button
