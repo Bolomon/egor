@@ -2,7 +2,7 @@
 import { Head } from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-
+import {onBeforeMount, ref} from "vue";
 
 </script>
 
