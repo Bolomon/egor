@@ -7,10 +7,10 @@ import {onBeforeMount, ref} from "vue";
 const userToken = localStorage.getItem("auth-token")
 
 const correctAnswer = [
-    'попугай',
-    'соловей',
+    ['попугай', 'попугаи'],
+    ['соловей', 'cоловьи'],
     ['галка', 'галчонок'],
-    'ласточка',
+    ['ласточка', 'ласточки'],
 ]
 const userAnswer = ref([
     '',
