@@ -69,6 +69,10 @@ body {
     text-align: center;
     color: #FFFFFF;
     margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
 }
 
 .info-block {
