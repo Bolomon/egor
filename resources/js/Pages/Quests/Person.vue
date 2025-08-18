@@ -152,8 +152,8 @@ onBeforeMount(() => {
             </div>
 
             <div class="quest__send">
-                <button class="quest__send-btn" @click="sendAnswer" v-if="step >= 3">Ответить</button>
-                <button class="quest__send-btn" @click="nextStep" v-else>Ответить</button>
+                <button class="quest__send-btn" @click="sendAnswer" v-if="step >= 3">{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
+                <button class="quest__send-btn" @click="nextStep" v-else>{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
             </div>
         </div>
     </MainLayout>

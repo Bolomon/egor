@@ -2,8 +2,16 @@
 import { Head } from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-import { nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
+import {nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
 import axios from 'axios';
+
+
+const userToken = localStorage.getItem("auth-token");
+const config = {
+    headers: {
+        'Authorization': 'Bearer ' + userToken
+    }
+};
 
 // Данные
 const items = reactive([
@@ -75,11 +83,13 @@ function computeLines() {
 
 // Обработчики кликов
 function onTextClick(i) {
+    if (questCompleted.value) return;
     pending.value = i;
     selectedTextIndex.value = i;
 }
 
 async function onImageClick(i) {
+    if (questCompleted.value) return;
     if (pending.value == null) return;
 
     const t = pending.value;
@@ -167,6 +177,7 @@ onBeforeUnmount(() => {
 
 // Если пользователь меняет связи после проверки — сбрасываем подсветку к нейтральной
 watch(mapping, () => {
+    if (questCompleted.value) return;
     checked.value = false;
     computeLines();
     saveMapping();
@@ -181,13 +192,7 @@ function onSubmit() {
     const sizeOk = Object.keys(mapping.value).length === items.length;
     const allCorrect = sizeOk && items.every((_, t) => mapping.value[t] === correctMapping[t]);
 
-    if (allCorrect) {
-        const userToken = localStorage.getItem("auth-token");
-        const config = {
-            headers: {
-                'Authorization': 'Bearer ' + userToken
-            }
-        };
+    if (allCorrect && !questCompleted.value) {
         axios
             .post('/api/quests/cinema/complete', {}, config)
             .then((data) => {
@@ -211,8 +216,24 @@ function onSubmit() {
             correct: correctMapping[t] === imgIdx,
         };
     });
-    console.log('Проверка:', result, 'Все верные:', allCorrect);
 }
+
+const questCompleted = ref(false)
+const checkQuestCompleted = function () {
+    axios
+        .get('/api/quests/name/cinema', config)
+        .then((data) => {
+            if (data.data.completed) {
+                questCompleted.value = data.data.completed
+
+                onSubmit()
+            }
+        })
+}
+
+onBeforeMount(() => {
+    checkQuestCompleted()
+})
 </script>
 
 <template>
@@ -237,13 +258,13 @@ function onSubmit() {
             <!-- SVG-оверлей для стрелок (fixed, поверх окна) -->
             <svg class="connector-overlay" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <marker id="arrow-yellow" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <marker id="arrow-yellow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#EFC30A" />
                     </marker>
-                    <marker id="arrow-green" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#00FF2F" />
                     </marker>
-                    <marker id="arrow-red" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                    <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF0000" />
                     </marker>
                 </defs>
@@ -277,7 +298,7 @@ function onSubmit() {
                 </div>
             </div>
 
-            <button class="quest-btn" @click="onSubmit">Ответить</button>
+            <button class="quest-btn" @click="onSubmit">{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
         </div>
     </MainLayout>
 </template>

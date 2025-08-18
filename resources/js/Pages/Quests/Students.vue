@@ -80,15 +80,19 @@ const sendAnswer = function () {
 const addOrRemoveAnswer = function (index) {
     if (questCompleted.value) return
 
-    const arr = userAnswer.value
+    const arr = [...userAnswer.value]
     const pos = arr.indexOf(index)
 
-    if (pos === -1 && arr.length < 3) {
-        userAnswer.value = [...arr, index]
+    if (pos !== -1) {
+        arr.splice(pos, 1)
     } else {
-        userAnswer.value = [...arr.slice(0, pos), ...arr.slice(pos + 1)]
+        if (arr.length >= 3) {
+            arr.shift()
+        }
+        arr.push(index)
     }
 
+    userAnswer.value = arr
     answerChecked.value = []
 }
 
@@ -230,7 +234,7 @@ onBeforeMount(() => {
                     <button
                         class="quest__form-btn"
                         @click="sendAnswer"
-                    >Ответить</button>
+                    >{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
                 </div>
             </div>
         </div>

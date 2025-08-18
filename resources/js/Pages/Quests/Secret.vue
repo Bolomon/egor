@@ -401,7 +401,7 @@ function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + m
                 />
             </div>
 
-            <button class="quest-btn" @click="onSubmit">Ответить</button>
+            <button class="quest-btn" @click="onSubmit">{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
         </div>
     </MainLayout>
 </template>

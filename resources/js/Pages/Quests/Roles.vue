@@ -203,7 +203,7 @@ onBeforeMount(() => {
             <button
               class="quest-btn"
               @click="sendAnswer"
-            >Ответить</button>
+            >{{ questCompleted ? 'Выполнено' : 'Ответить' }}</button>
         </div>
     </MainLayout>
 </template>
