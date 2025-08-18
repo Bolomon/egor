@@ -2,9 +2,8 @@
 import { Head } from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-import {nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch} from "vue";
+import { nextTick, onBeforeMount, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import axios from 'axios';
-
 
 const userToken = localStorage.getItem("auth-token");
 const config = {
@@ -40,7 +39,8 @@ const selectedTextIndex = ref(null);
 const checked = ref(false);
 
 // Отображение линий
-const lines = ref([]); // [{ x1,y1,x2,y2,color,marker }]
+// Каждая линия: { x1, y1, x2, y2, color }
+const lines = ref([]);
 
 // Биекция: текст -> картинка и картинка -> текст
 const mapping = ref({}); // { [textIndex: number]: imageIndex: number }
@@ -67,16 +67,14 @@ function computeLines() {
         const x2 = b.left - 6;
         const y2 = b.top + b.height / 2;
 
-        // Цвет и маркер в зависимости от режима проверки
-        let color = '#EFC30A';
-        let marker = 'arrow-yellow';
+        // Цвет линии. В Safari маркер наследует его через context-stroke
+        let color = '#EFC30A'; // нейтральный (жёлтый)
         if (checked.value) {
             const isCorrect = correctMapping[t] === imgIdx;
-            color = isCorrect ? '#00FF2F' : '#FF0000';
-            marker = isCorrect ? 'arrow-green' : 'arrow-red';
+            color = isCorrect ? '#00FF2F' : '#FF0000'; // зелёный/красный
         }
 
-        result.push({ x1, y1, x2, y2, color, marker });
+        result.push({ x1, y1, x2, y2, color });
     }
     lines.value = result;
 }
@@ -205,17 +203,7 @@ function onSubmit() {
             });
     }
 
-    // Для отладки можно посмотреть подробности:
-    const result = Object.entries(mapping.value).map(([tStr, imgIdx]) => {
-        const t = Number(tStr);
-        return {
-            textIndex: t,
-            text: items[t]?.title,
-            imageIndex: imgIdx,
-            image: items[imgIdx]?.img,
-            correct: correctMapping[t] === imgIdx,
-        };
-    });
+    // При необходимости здесь можно логировать результат
 }
 
 const questCompleted = ref(false)
@@ -225,7 +213,6 @@ const checkQuestCompleted = function () {
         .then((data) => {
             if (data.data.completed) {
                 questCompleted.value = data.data.completed
-
                 onSubmit()
             }
         })
@@ -258,21 +245,19 @@ onBeforeMount(() => {
             <!-- SVG-оверлей для стрелок (fixed, поверх окна) -->
             <svg class="connector-overlay" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <marker id="arrow-yellow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#EFC30A" />
-                    </marker>
-                    <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#00FF2F" />
-                    </marker>
-                    <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF0000" />
+                    <!-- Один маркер. Цвет и обводка наследуются от линии через context-stroke -->
+                    <marker id="arrow" viewBox="0 0 10 10"
+                            refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" stroke="context-stroke" />
                     </marker>
                 </defs>
                 <g>
-                    <line v-for="(ln, idx) in lines" :key="idx"
-                          :x1="ln.x1" :y1="ln.y1" :x2="ln.x2" :y2="ln.y2"
-                          :stroke="ln.color" stroke-width="2"
-                          :marker-end="`url(#${ln.marker})`" />
+                    <line
+                        v-for="(ln, idx) in lines"
+                        :key="`${idx}-${ln.color}`"
+                        :x1="ln.x1" :y1="ln.y1" :x2="ln.x2" :y2="ln.y2"
+                        :stroke="ln.color" stroke-width="2"
+                        marker-end="url(#arrow)" />
                 </g>
             </svg>
 
