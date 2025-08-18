@@ -38,8 +38,17 @@ const selectedTextIndex = ref(null);
 // Флаг "проверено"
 const checked = ref(false);
 
+// Safari: детект и фолбэк
+const isSafari = typeof navigator !== 'undefined'
+    && /Safari/.test(navigator.userAgent)
+    && !/Chrome|Chromium|Edg|OPR/.test(navigator.userAgent);
+
+// Если Safari — используем фиксированные маркеры ('arrow-yellow'/'-green'/'-red')
+// иначе — один маркер с context-stroke
+const useFixedMarkers = ref(isSafari);
+
 // Отображение линий
-// Каждая линия: { x1, y1, x2, y2, color }
+// Каждая линия: { x1, y1, x2, y2, color, marker }
 const lines = ref([]);
 
 // Биекция: текст -> картинка и картинка -> текст
@@ -67,14 +76,18 @@ function computeLines() {
         const x2 = b.left - 6;
         const y2 = b.top + b.height / 2;
 
-        // Цвет линии. В Safari маркер наследует его через context-stroke
-        let color = '#EFC30A'; // нейтральный (жёлтый)
+        let color = '#EFC30A';
+        let marker = useFixedMarkers.value ? 'arrow-yellow' : 'arrow';
+
         if (checked.value) {
             const isCorrect = correctMapping[t] === imgIdx;
-            color = isCorrect ? '#00FF2F' : '#FF0000'; // зелёный/красный
+            color = isCorrect ? '#00FF2F' : '#FF0000';
+            marker = useFixedMarkers.value
+                ? (isCorrect ? 'arrow-green' : 'arrow-red')
+                : 'arrow';
         }
 
-        result.push({ x1, y1, x2, y2, color });
+        result.push({ x1, y1, x2, y2, color, marker });
     }
     lines.value = result;
 }
@@ -202,8 +215,6 @@ function onSubmit() {
                 console.error('Ошибка при отправке результата:', e);
             });
     }
-
-    // При необходимости здесь можно логировать результат
 }
 
 const questCompleted = ref(false)
@@ -245,19 +256,36 @@ onBeforeMount(() => {
             <!-- SVG-оверлей для стрелок (fixed, поверх окна) -->
             <svg class="connector-overlay" xmlns="http://www.w3.org/2000/svg">
                 <defs>
-                    <!-- Один маркер. Цвет и обводка наследуются от линии через context-stroke -->
+                    <!-- Универсальный маркер для браузеров с поддержкой context-stroke -->
                     <marker id="arrow" viewBox="0 0 10 10"
                             refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke" stroke="context-stroke" />
+                        <path d="M 0 0 L 10 5 L 0 10 z"
+                              fill="context-stroke" stroke="context-stroke" />
+                    </marker>
+
+                    <!-- Фиксированные маркеры для Safari (жёлтый/зелёный/красный) -->
+                    <marker id="arrow-yellow" viewBox="0 0 10 10"
+                            refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#EFC30A" />
+                    </marker>
+                    <marker id="arrow-green" viewBox="0 0 10 10"
+                            refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#00FF2F" />
+                    </marker>
+                    <marker id="arrow-red" viewBox="0 0 10 10"
+                            refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#FF0000" />
                     </marker>
                 </defs>
+
                 <g>
                     <line
                         v-for="(ln, idx) in lines"
-                        :key="`${idx}-${ln.color}`"
+                        :key="`${idx}-${ln.marker}-${ln.color}`"
                         :x1="ln.x1" :y1="ln.y1" :x2="ln.x2" :y2="ln.y2"
                         :stroke="ln.color" stroke-width="2"
-                        marker-end="url(#arrow)" />
+                        stroke-linecap="round" stroke-linejoin="round"
+                        :marker-end="`url(#${ln.marker})`" />
                 </g>
             </svg>
 
