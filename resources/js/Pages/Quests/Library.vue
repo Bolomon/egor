@@ -79,15 +79,19 @@ const sendAnswer = function () {
 const addOrRemoveAnswer = function (index) {
     if (questCompleted.value) return
 
-    const arr = userAnswer.value
+    const arr = [...userAnswer.value]
     const pos = arr.indexOf(index)
 
-    if (pos === -1 && arr.length < 2) {
-        userAnswer.value = [...arr, index]
+    if (pos !== -1) {
+        arr.splice(pos, 1)
     } else {
-        userAnswer.value = [...arr.slice(0, pos), ...arr.slice(pos + 1)]
+        if (arr.length >= 2) {
+            arr.shift()
+        }
+        arr.push(index)
     }
 
+    userAnswer.value = arr
     answerChecked.value = []
 }
 
@@ -111,7 +115,7 @@ onBeforeMount(() => {
 </script>
 
 <template>
-    <Head title="История жизни О. П. Табакова" />
+    <Head title="Библиотека" />
     <MainLayout>
         <ProgressBar/>
 
@@ -211,6 +215,7 @@ onBeforeMount(() => {
         &-item {
             position: relative;
             border-radius: 10px;
+            user-select: none;
 
             &.selected {
                 border: 2px solid #EFC30A;
