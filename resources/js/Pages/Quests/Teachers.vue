@@ -124,7 +124,7 @@ onBeforeMount(() => {
                             incorrect: error[0],
                             correct: questCompleted,
                         }"
-                        placeholder="Слово"
+                        placeholder="Буква"
                         v-model="userAnswer[0]"
                         :disabled="questCompleted"
                     >
@@ -136,7 +136,7 @@ onBeforeMount(() => {
                             incorrect: error[1],
                             correct: questCompleted,
                         }"
-                        placeholder="Слово"
+                        placeholder="Буква"
                         v-model="userAnswer[1]"
                         :disabled="questCompleted"
                     >
