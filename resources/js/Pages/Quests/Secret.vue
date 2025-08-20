@@ -2,14 +2,14 @@
 import { Head } from '@inertiajs/vue3';
 import MainLayout from "@/Layouts/MainLayout.vue";
 import ProgressBar from "@/Components/ProgressBar.vue";
-import {onMounted, onBeforeUnmount, ref, reactive, nextTick, computed, onBeforeMount} from "vue";
+import {onMounted, onBeforeUnmount, ref, reactive, nextTick} from "vue";
 
 // Регулировки
 const DRAG_HEIGHT = 454; // высота поля (была фиксирована в CSS)
 const GAP = 6;           // расстояние между зонами
 const FRAME_INSET = { top: 20, right: 8, bottom: 100, left: 8 }; // внутренние поля от рамки
 
-const STORAGE_KEY = 'secret-puzzle-v2';
+const STORAGE_KEY = 'secret-puzzle-v3';
 
 const containerRef = ref(null);
 
@@ -17,9 +17,9 @@ const containerRef = ref(null);
 const slots = ref([]); // [{x,y,w,h,cx,cy}]
 const slotsMap = reactive({});
 
-// 11 фрагментов
+// 12 фрагментов
 const pieces = ref(
-    Array.from({ length: 11 }, (_, i) => ({
+    Array.from({ length: 12 }, (_, i) => ({
         id: i + 1,
         x: 0,
         y: 0,
@@ -34,10 +34,9 @@ const pieces = ref(
 
 const checked = ref(false);
 
+// Прямая нумерация: фрагмент N → слот N-1
 function desiredSlotIndexForPiece(id) {
-    if (id >= 1 && id <= 4) return id - 1; // слоты 0..3
-    if (id >= 5 && id <= 8) return id;     // слоты 5..8 (4-й пустой)
-    if (id >= 9 && id <= 11) return id;    // слоты 9..11
+    if (id >= 1 && id <= 12) return id - 1;
     return null;
 }
 
@@ -56,7 +55,7 @@ function computeSlots() {
     const el = containerRef.value;
     if (!el) return;
 
-    const { w, innerW, innerH } = getWorkArea();
+    const { innerW, innerH } = getWorkArea();
 
     // 6 рядов и 5 промежутков
     const rowH = Math.max(1, Math.floor((innerH - GAP * 5) / 6));
@@ -81,7 +80,7 @@ function computeSlots() {
     s.push({ x: x0 + halfW + GAP, y, w: halfW,  h: rowH });
     y += rowH + GAP;
 
-    // Ряд 3: 1/1 (пустой)
+    // Ряд 3: 1/1 (раньше был пустой — теперь используется)
     s.push({ x: x0,            y, w: fullW,  h: rowH });
     y += rowH + GAP;
 
@@ -246,7 +245,6 @@ function onSubmit() {
     checked.value = true;
 
     let allCorrect = true;
-    const emptyOk = !slotsMap[4]; // слот полной ширины должен быть пуст
 
     pieces.value.forEach(p => {
         const desired = desiredSlotIndexForPiece(p.id);
@@ -254,8 +252,6 @@ function onSubmit() {
         p.correct = isCorrect;
         if (!isCorrect) allCorrect = false;
     });
-
-    allCorrect = allCorrect && emptyOk;
 
     if (allCorrect) {
         axios
