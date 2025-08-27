@@ -78,8 +78,13 @@ onBeforeMount(() => {
                 <div class="info-congratulation--text">
                     Вы прошли весь квест
                 </div>
+                <h3 class="info-congratulation__gift-title">Ваш подарок:</h3>
+                <span class="info-congratulation__gift-code">ТАБАКОВ90</span>
+                <p class="info-congratulation__gift-subtitle">
+                    дающий скидку 25% на определенные<br>спектакли сентября Театра Олега Табакова
+                </p>
             </div>
-            <button class="info-btn" @click="handleInfoAction">
+            <button class="info-btn" @click="handleInfoAction" v-if="step !== 'congrats'">
                 {{ step === 'intro' ? 'Смотреть расшифровку' : (step === 'paper' ? 'Завершить' : 'Забрать подарок') }}
             </button>
         </div>
@@ -143,6 +148,45 @@ onBeforeMount(() => {
         line-height: 19px;
         color: #000000;
         margin-top: 80px;
+    }
+}
+
+.info-congratulation__gift {
+    &-title {
+        margin-top: 45px;
+        margin-bottom: 25px;
+        font-style: normal;
+        font-weight: 700;
+        font-size: 20px;
+        line-height: 27px;
+        text-align: center;
+        color: #FFFFFF;
+    }
+
+    &-code {
+        justify-self: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 250px;
+        height: 65px;
+        background: #EFC30A;
+        border-radius: 150px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 30px;
+        line-height: 41px;
+        color: #000000;
+        margin-bottom: 25px;
+    }
+
+    &-subtitle {
+        font-style: normal;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 16px;
+        text-align: center;
+        color: #FFFFFF;
     }
 }
 </style>
